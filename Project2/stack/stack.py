@@ -9,7 +9,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-class Awscdktest2Stack(Stack):
+class StackTest(Stack):
     """
     Class to define flow of:
         Event (every minute) -> SQS queue batch -> Lambda running on each batch

@@ -23,3 +23,10 @@ Setup of:
 - Timed event firing every minute
 - Sqs taking the events into batches
 - Lambda reading each batch when fired
+
+
+# Project3 - API Gateway -> Lambda Backed Endpoints
+
+Setup of:
+- 3 different lambdas
+- API gateway with each endpoint routed via a lambda
