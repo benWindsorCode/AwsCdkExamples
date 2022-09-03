@@ -33,8 +33,16 @@ Setup of:
 
 ## Project4 - S3 Object Creation -> Lambda (with requirements.txt)
 
-- Setup of:
+Setup of:
 - lambda taking deps from a requirements.txt
 - S3 bucket
 - S3 bucket object creation triggers lambda
 - template for opensearch cluster creation too if wanted
+
+## Project5 - AWS S3 -> Glue Crawler -> Athena
+
+Setup of:
+- s3 buckets for input and output
+- AWS glue crawler
+- Athena queries
+- ETL jobs
