@@ -8,7 +8,7 @@ cdk init --language python
 to setup the basic folder structure. You can then copy the project code into the parent and inner folders.
 Once setup run with 'cdk deploy' and kill with 'cdk destroy'.
 
-# Project1 - Static Site in S3
+## Project1 - Static Site in S3
 
 Setup of:
 - public bucket with index.html
@@ -17,7 +17,7 @@ Setup of:
 
 Problems: route53 certificate registration hangs for hours. Could sort manually but want a fully automated solution (see github issue linked in code)
 
-# Project2 - Timed Event -> Sqs -> Lambda
+## Project2 - Timed Event -> Sqs -> Lambda
 
 Setup of:
 - Timed event firing every minute
@@ -25,7 +25,7 @@ Setup of:
 - Lambda reading each batch when fired
 
 
-# Project3 - API Gateway -> Lambda Backed Endpoints
+## Project3 - API Gateway -> Lambda Backed Endpoints
 
 Setup of:
 - 3 different lambdas
