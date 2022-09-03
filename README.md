@@ -1,6 +1,11 @@
 # AwsCdkExamples
 Worked examples of aws cdk usage. Note: you should use the usual cdk bootstrap and init. These projects just container the inner stack code.
 
+In an empty directory run
+```shell
+cdk init --language python
+```
+to setup the basic folder structure. You can then copy the project code into the parent and inner folders.
 Once setup run with 'cdk deploy' and kill with 'cdk destroy'.
 
 # Project1 - Static Site in S3
