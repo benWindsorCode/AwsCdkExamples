@@ -6,8 +6,6 @@ class StackTest(cdk.Stack):
     def __init__(self, scope: cdk.App, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        url = "YOUR URL HERE" # e.g. testsite.com
-
         bucket = s3.Bucket(
             self,
             "MyFirstBucket",
@@ -37,67 +35,52 @@ class StackTest(cdk.Stack):
             )],
         )
 
-        # If just needing cloudfront and no route53 then just use this
-        distribution = cdk.aws_cloudfront.Distribution(
+        # OPTION 1: If just needing cloudfront and no route53 then just use this
+        # distribution = cdk.aws_cloudfront.Distribution(
+        #     self,
+        #     "CloudfrontDist",
+        #     default_behavior=cdk.aws_cloudfront.BehaviorOptions(origin=cdk.aws_cloudfront_origins.S3Origin(bucket)),
+        # )
+
+        # OPTION 2: If needing route53 then comment out above distribution and use this instead
+        # N.B. some setup required:
+        # - you need a domain and a hosted zone (ensure the name servers in the domain and hosted zone match!!!)
+        # - you need a certificate in us-east-1 (to use cloudfront) that is added to the hosted zone (theres a button on the certificate page to do this)
+        hosted_zone_id = "YOUR HOSTED ZONE ID HERE"
+        certificate_arn = "YOUR CERTIFICATE ARN HERE"
+        url = "YOUR URL HERE"
+
+        hosted_zone = cdk.aws_route53.HostedZone.from_hosted_zone_attributes(
             self,
-            "CloudfrontDist",
-            default_behavior=cdk.aws_cloudfront.BehaviorOptions(origin=cdk.aws_cloudfront_origins.S3Origin(bucket)),
+            "hosted_zone",
+            zone_name=url,
+            hosted_zone_id=hosted_zone_id
         )
 
-        # If needing route53 then comment out above distribution and use this instead
+        my_dns_certificate = cdk.aws_certificatemanager.Certificate.from_certificate_arn(
+            self,
+            "Certificate",
+            certificate_arn
+        )
 
-        # The below was for trying to hook up route53 too
-        # Ran into this issue: https://github.com/aws/aws-cdk/issues/2914
-        # In summary: certificate creation can take longer than the timeout
-        # For cloudfront you must have certificates in us-east-1, so then have to use a DnsValidatedCertificate to
-        # get cross regional certificate to work (as I deploy to eu-west-1).
-        # One proposed solution is to deploy al to eu-west-1 then just use a noraml 'certificate'. This has less
-        # timeout constraints.
-        #
-        # hosted_zone = cdk.aws_route53.PublicHostedZone(
-        #     self,
-        #     "HostedZone",
-        #     zone_name=url
-        # )
-        #
-        # my_dns_certificate = cdk.aws_certificatemanager.Certificate(
-        #     self,
-        #     "Certificate",
-        #     domain_name=url,
-        #     validation=cdk.aws_certificatemanager.CertificateValidation.from_dns(hosted_zone)
-        # )
-        #
-        # # Another attempt - this one has 5 min timeout but takes longer to create so cant be used
-        # # my_dns_certificate = cdk.aws_certificatemanager.DnsValidatedCertificate(
-        # #     self,
-        # #     "mySiteCert",
-        # #     domain_name=url,
-        # #     hosted_zone=hosted_zone,
-        # #     region="us-east-1"
-        # # )
-        # #
-        # viewer_certificate = cdk.aws_cloudfront.ViewerCertificate.from_acm_certificate(my_dns_certificate)
-        # distribution = cdk.aws_cloudfront.CloudFrontWebDistribution(
-        #     self,
-        #     "MyCfWebDistribution",
-        #     origin_configs=[cdk.aws_cloudfront.SourceConfiguration(
-        #         s3_origin_source=cdk.aws_cloudfront.S3OriginConfig(
-        #             s3_bucket_source=bucket
-        #         ),
-        #         behaviors=[cdk.aws_cloudfront.Behavior(is_default_behavior=True)]
-        #     )],
-        #     viewer_certificate=viewer_certificate,
-        # )
-        # cdk.aws_route53.ARecord(
-        #     self,
-        #     "CdnARecord",
-        #     zone=hosted_zone,
-        #     target=cdk.aws_route53.RecordTarget.from_alias(cdk.aws_route53_targets.CloudFrontTarget(distribution))
-        # )
-        #
-        # cdk.aws_route53.AaaaRecord(
-        #     self,
-        #     "CdnAliasRecord",
-        #     zone=hosted_zone,
-        #     target=cdk.aws_route53.RecordTarget.from_alias(cdk.aws_route53_targets.CloudFrontTarget(distribution))
-        # )
+        distribution = cdk.aws_cloudfront.Distribution(
+            self,
+            "MyCfWebDistribution",
+            default_behavior=cdk.aws_cloudfront.BehaviorOptions(origin=cdk.aws_cloudfront_origins.S3Origin(bucket)),
+            domain_names=[url],
+            certificate=my_dns_certificate
+        )
+
+        cdk.aws_route53.ARecord(
+            self,
+            "CdnARecord",
+            zone=hosted_zone,
+            target=cdk.aws_route53.RecordTarget.from_alias(cdk.aws_route53_targets.CloudFrontTarget(distribution))
+        )
+
+        cdk.aws_route53.AaaaRecord(
+            self,
+            "CdnAliasRecord",
+            zone=hosted_zone,
+            target=cdk.aws_route53.RecordTarget.from_alias(cdk.aws_route53_targets.CloudFrontTarget(distribution))
+        )

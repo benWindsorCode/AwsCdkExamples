@@ -8,15 +8,27 @@ cdk init --language python
 to setup the basic folder structure. You can then copy the project code into the parent and inner folders.
 Once setup run with 'cdk deploy' and kill with 'cdk destroy'.
 
-## Project1 - Static Site in S3
+## Project1 - Static Site in S3 -> Cloudfront -> Route53
+
+Prerequisites (one time setup - not all possible/easy with cdk):
+- domain name 
+- hosted zone in aws, with name servers matching the domain name name servers
+- certificate in us-east-1 (for cloudfront) that is registered in the hosted zone
 
 Setup of:
 - public bucket with index.html
 - cloudfront cache in front of bucket (to save reads to bucket)
-- (not complete) route53 facing the cloudfront cache for proper url
+- route53 facing the cloudfront cache for proper url
 
-Problems: route53 certificate registration hangs for hours. Could sort manually but want a fully automated solution (see github issue linked in code)
-
+Programatic certificate request is possible, but slow, if needed use (but unsure how to get it in us-east-1):
+```python
+    my_dns_certificate = aws_certificatemanager.Certificate(
+        self,
+        "Certificate",
+        domain_name=url,
+        validation=aws_certificatemanager.CertificateValidation.from_dns(hosted_zone)
+    )
+```
 ## Project2 - Timed Event -> Sqs -> Lambda
 
 Setup of:
