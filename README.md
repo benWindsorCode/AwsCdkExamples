@@ -58,3 +58,11 @@ Setup of:
 - AWS glue crawler
 - Athena queries
 - ETL jobs
+
+## Project6 - AWS Gateway -> Route53
+
+Setup of:
+- lambda backed api gateway
+- example of environment vars for lambda 
+- timeout and resource plan of api gateway
+- route53 front to api gateway
