@@ -42,6 +42,7 @@ Setup of:
 Setup of:
 - 3 different lambdas
 - API gateway with each endpoint routed via a lambda
+- Optional extra gateway config for cors and public url
 
 ## Project4 - S3 Object Creation -> Lambda (with requirements.txt)
 

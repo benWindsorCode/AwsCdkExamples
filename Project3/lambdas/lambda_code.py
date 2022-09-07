@@ -6,7 +6,9 @@ def default(event, context):
     return {
         'statusCode': 200,
         'headers': {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'text/plain',
+            # For CORS
+            'Access-Control-Allow-Origin': '*'
         },
         'body': f'This is my test response (from default)'
     }
@@ -17,7 +19,9 @@ def handler1(event, context):
     return {
         'statusCode': 200,
         'headers': {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'text/plain',
+            # For CORS
+            'Access-Control-Allow-Origin': '*'
         },
         'body': f'This is my test response (from handler1)'
     }
@@ -28,7 +32,9 @@ def handler2(event, context):
     return {
         'statusCode': 200,
         'headers': {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'text/plain',
+            # For CORS
+            'Access-Control-Allow-Origin': '*'
         },
         'body': f'This is my test response (from handler2)'
     }
